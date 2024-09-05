@@ -159,7 +159,7 @@ function containers(
         if (child instanceof Container) {
           containers.push(child);
           containers = containers.concat(getContainers(child, childIndex, lengthLeft));
-        } 
+        }
         lengthLeft -= childLength;
       }
     );
@@ -224,7 +224,7 @@ TableToolbar.DEFAULTS = {
   handlers: {
     ...Toolbar.DEFAULTS.handlers,
     header(value: string, lines?: any[]) {
-      const cellSelection = this.getCellSelection(); 
+      const cellSelection = this.getCellSelection();
       const selectedTds = cellSelection.selectedTds;
       if (selectedTds.length) {
         return tablehandler.call(this, value, selectedTds, 'header', lines);
@@ -242,7 +242,7 @@ TableToolbar.DEFAULTS = {
         }
         return tablehandler.call(this, value, selectedTds, 'list', lines);
       }
-      
+
       const range = this.quill.getSelection(true);
       const formats = this.quill.getFormat(range);
       if (value === 'check') {

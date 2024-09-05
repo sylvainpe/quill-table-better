@@ -5,17 +5,17 @@ const Inline = Quill.import('blots/inline');
 const icons = Quill.import('ui/icons');
 icons['table-better'] = tableIcon;
 const SUM = 10;
- 
+
 class ToolbarTable extends Inline {
   static computeChildren: Element[] = [];
-  
+
   static clearSelected(children: Element[]) {
     for (const child of children) {
       child.classList && child.classList.remove('ql-cell-selected');
     }
   }
 
-  static createContainer() {
+  static createContainer(quillInstance:any) {
     const container = document.createElement('div');
     const list = document.createElement('div');
     const label = document.createElement('div');
@@ -36,7 +36,8 @@ class ToolbarTable extends Inline {
     container.appendChild(list);
     container.appendChild(label);
     container.addEventListener('mousemove', e => this.handleMouseMove(e, container));
-    this.root = container;
+    quillInstance.container.appendChild(container);
+    quillInstance.tableSelectContainer = container;
     return container;
   }
 
@@ -58,16 +59,16 @@ class ToolbarTable extends Inline {
     return [row, column];
   }
 
-  static handleClick(e: MouseEvent, insertTable: _insertTable) {
-    this.toggle(this.root);
+  static handleClick(e: MouseEvent, quillInstance:any, insertTable: _insertTable) {
+    const container = quillInstance.tableSelectContainer;
+    this.toggle(container);
     const span = (e.target as Element).closest('span[row]');
     if (!span) {
-      // Click between two spans
       const child = this.computeChildren[this.computeChildren.length - 1];
-      if (child) this.insertTable(child, insertTable);
+      if (child) this.insertTable(child, insertTable, quillInstance);
       return;
     }
-    this.insertTable(span, insertTable);
+    this.insertTable(span, insertTable, quillInstance);
   }
 
   static handleMouseMove(e: MouseEvent, container: Element) {
@@ -87,11 +88,12 @@ class ToolbarTable extends Inline {
     element && element.classList.add('ql-hidden');
   }
 
-  static insertTable(child: Element, insertTable: _insertTable) {
+  static insertTable(child: Element, insertTable: _insertTable, quillInstance:any) {
     const [row, column] = this.getSelectAttrs(child);
     insertTable(row, column);
-    this.root && this.clearSelected(this.root.firstElementChild.children);
-    this.hide(this.root);
+    const container = quillInstance.tableSelectContainer;
+    this.clearSelected(container.firstElementChild.children);
+    this.hide(container);
     this.computeChildren = [];
   }
 

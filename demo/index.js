@@ -44,8 +44,10 @@ const options = {
 };
 
 const editor = new Quill('#root', options);
+const editor2 = new Quill('#root2', options);
+
 const tableModule = editor.getModule('table-better');
 const btn = document.getElementById('btn');
 btn.onclick = () => {
   tableModule.insertTable(3, 3);
-}
+};

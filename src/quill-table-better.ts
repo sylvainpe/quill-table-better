@@ -14,7 +14,7 @@ import {
 } from './formats/table';
 import TableHeader from './formats/header';
 import { ListContainer } from './formats/list';
-import { 
+import {
   matchTable,
   matchTableCell,
   matchTableCol,
@@ -71,7 +71,7 @@ class Table extends Module {
     this.cellSelection = new CellSelection(quill, this);
     this.operateLine = new OperateLine(quill, this);
     this.tableMenus = new TableMenus(quill, this);
-    document.addEventListener('keyup', this.handleKeyup.bind(this));
+    quill.root.addEventListener('keyup', this.handleKeyup.bind(this));
     quill.root.addEventListener('mousedown', this.handleMousedown.bind(this));
     quill.root.addEventListener('scroll', this.handleScroll.bind(this));
     this.registerToolbarTable(options?.toolbarTable);
@@ -178,10 +178,10 @@ class Table extends Module {
     const toolbar = this.quill.getModule('toolbar');
     const button = toolbar.container.querySelector('button.ql-table-better');
     if (!button) return;
-    const selectContainer = ToolbarTable.createContainer();
+    const selectContainer = ToolbarTable.createContainer(this.quill);
     button.appendChild(selectContainer);
     button.addEventListener('click', (e: MouseEvent) => {
-      ToolbarTable.handleClick(e, this.insertTable.bind(this));
+      ToolbarTable.handleClick(e, this.quill, this.insertTable.bind(this));
     });
   }
 
@@ -317,7 +317,7 @@ function makeTableListHandler(key: string) {
     handler(range: Range, context: Context) {
       const [line] = this.quill.getLine(range.index);
       const cellId = line.parent.formats()[line.parent.statics.blotName];
-      line.replaceWith(TableCellBlock.blotName, cellId);      
+      line.replaceWith(TableCellBlock.blotName, cellId);
     }
   }
 }
